@@ -10,7 +10,7 @@
 
 # Team Members
 
-Wilfred Faltz <br><br>
+<br>Wilfred Faltz <br><br>
 Alyssa Harris <br><br>
 Rafay Hassan <br><Br>
 Preethi Chandrashekar<br><br>
