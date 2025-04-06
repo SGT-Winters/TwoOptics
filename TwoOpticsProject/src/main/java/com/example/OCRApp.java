@@ -38,6 +38,7 @@ public class OCRApp extends JFrame {
 
         setVisible(true);
         setLocationRelativeTo(null);
+        setResizable(false);
     }
 
     private void chooseImage() {
