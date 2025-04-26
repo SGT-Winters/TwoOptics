@@ -4,7 +4,7 @@ import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.*;
 import java.io.File;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -13,10 +13,12 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class OCRApp extends JFrame {
     private JButton selectImageButton;
-    private JTextArea resultArea;
+    private JTextPane resultArea;
+    private JComboBox<String> fontTypes;
 
     public OCRApp() {
         setTitle("TwoOptics");
@@ -25,16 +27,22 @@ public class OCRApp extends JFrame {
         setLayout(null);
 
         selectImageButton = new JButton("Select Image");
-        selectImageButton.setBounds(210, 20, 150, 30);
+        selectImageButton.setBounds(210, 140, 130, 30);
         add(selectImageButton);
 
-        resultArea = new JTextArea();
-        resultArea.setBounds(50, 70, 490, 550);
-        resultArea.setLineWrap(true);
-        resultArea.setWrapStyleWord(true);
+        resultArea = new JTextPane();
+        resultArea.setBounds(15, 180, 550, 450);
         add(resultArea);
+        resultArea.setEditable(false);
+
+        String[] fonts = {"Arial", "Helvetica", "Times New Roman", "Courier New", "Century", "Serif"};
+        fontTypes = new JComboBox(fonts);
+        fontTypes.setBounds(30,70,130,30);
+        add(fontTypes);
 
         selectImageButton.addActionListener(e -> chooseImage());
+        fontTypes.addActionListener(e -> changeFont(fontTypes.getSelectedItem().toString()));
+
 
         setVisible(true);
         setLocationRelativeTo(null);
@@ -47,12 +55,15 @@ public class OCRApp extends JFrame {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
             String name = file.getName().toLowerCase();
+            resultArea.setEditable(false);
             String result;
 
             if (name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".jpeg")) {
                 result = performOCR(file);
+                resultArea.setEditable(true);
             } else if (name.endsWith(".pdf")) {
                 result = performOCRFromPDF(file);
+                resultArea.setEditable(true);
             } else {
                 result = "Unsupported file type.";
             }
@@ -61,10 +72,27 @@ public class OCRApp extends JFrame {
         }
     }
 
+    private void changeFont(String fontName) {
+        int start = resultArea.getSelectionStart();
+        int end = resultArea.getSelectionEnd();
+
+        if (start == end) {
+            // No text selected
+            return;
+        }
+
+        javax.swing.text.StyledDocument doc = resultArea.getStyledDocument();
+        javax.swing.text.Style style = resultArea.addStyle("NewStyle", null);
+        javax.swing.text.StyleConstants.setFontFamily(style, fontName);
+
+        doc.setCharacterAttributes(start, end - start, style, false);
+    }
+
+
 
     private String performOCR(File imageFile) {
         Tesseract tesseract = new Tesseract();
-        tesseract.setDatapath("C:/Program Files/Tesseract-OCR/tessdata"); // Update this path
+        tesseract.setDatapath("C:/Program Files/Tesseract-OCR/tessdata");
         try {
             return tesseract.doOCR(imageFile);
         } catch (TesseractException e) {
