@@ -19,6 +19,11 @@ public class OCRApp extends JFrame {
     private JButton selectImageButton;
     private JTextPane resultArea;
     private JComboBox<String> fontTypes;
+    private JButton increaseFontSizeButton;
+    private JButton decreaseFontSizeButton;
+
+    private JLabel fontLable;
+    private JLabel fontSize;
 
     public OCRApp() {
         setTitle("TwoOptics");
@@ -40,8 +45,28 @@ public class OCRApp extends JFrame {
         fontTypes.setBounds(30,70,130,30);
         add(fontTypes);
 
+        fontLable = new JLabel("Font");
+        fontLable.setBounds(30,45,130,30);
+        fontLable.setFont(new Font("Arial", Font.BOLD, 18));
+        add(fontLable);
+
+        increaseFontSizeButton = new JButton("+");
+        increaseFontSizeButton.setBounds(90, 130, 45, 25);
+        add(increaseFontSizeButton);
+
+        decreaseFontSizeButton = new JButton("-");
+        decreaseFontSizeButton.setBounds(30, 130, 45, 25);
+        add(decreaseFontSizeButton);
+
+        fontSize = new JLabel("Size");
+        fontSize.setBounds(30,105,130,30);
+        fontSize.setFont(new Font("Arial", Font.BOLD, 18));
+        add(fontSize);
+
         selectImageButton.addActionListener(e -> chooseImage());
         fontTypes.addActionListener(e -> changeFont(fontTypes.getSelectedItem().toString()));
+        increaseFontSizeButton.addActionListener(e -> changeFontSize(2));
+        decreaseFontSizeButton.addActionListener(e -> changeFontSize(-2));
 
 
         setVisible(true);
@@ -77,7 +102,6 @@ public class OCRApp extends JFrame {
         int end = resultArea.getSelectionEnd();
 
         if (start == end) {
-            // No text selected
             return;
         }
 
@@ -87,6 +111,28 @@ public class OCRApp extends JFrame {
 
         doc.setCharacterAttributes(start, end - start, style, false);
     }
+
+    private void changeFontSize(int amount) {
+        int start = resultArea.getSelectionStart();
+        int end = resultArea.getSelectionEnd();
+
+        if (start == end) {
+            return;
+        }
+
+        javax.swing.text.StyledDocument doc = resultArea.getStyledDocument();
+        javax.swing.text.Element element = doc.getCharacterElement(start);
+        javax.swing.text.AttributeSet as = element.getAttributes();
+
+        int currentSize = javax.swing.text.StyleConstants.getFontSize(as);
+        int newSize = Math.max(2, currentSize + amount); // prevent going below size 2
+
+        javax.swing.text.Style style = resultArea.addStyle("SizeStyle", null);
+        javax.swing.text.StyleConstants.setFontSize(style, newSize);
+
+        doc.setCharacterAttributes(start, end - start, style, false);
+    }
+
 
 
 
@@ -100,6 +146,7 @@ public class OCRApp extends JFrame {
             return "Error performing OCR";
         }
     }
+
 
     private String performOCRFromPDF(File pdfFile) {
         StringBuilder resultText = new StringBuilder();
