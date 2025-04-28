@@ -30,13 +30,14 @@ public class OCRApp extends JFrame {
         setSize(600, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(null);
+        getContentPane().setBackground(new Color(194, 229, 229));
 
         selectImageButton = new JButton("Select Image");
         selectImageButton.setBounds(210, 140, 130, 30);
         add(selectImageButton);
 
         resultArea = new JTextPane();
-        resultArea.setBounds(15, 180, 550, 450);
+        resultArea.setBounds(17, 190, 550, 450);
         add(resultArea);
         resultArea.setEditable(false);
 
