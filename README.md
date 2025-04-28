@@ -1,6 +1,6 @@
 # TwoOptics
 
-## About TwoOpticsOCR
+# About TwoOpticsOCR
 
 <br>
 Converts the terminal based Tesseract OCR to a user-friendly interface that allows a user to upload, view and edit text
