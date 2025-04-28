@@ -8,13 +8,12 @@
 
 # About TwoOpticsOCR
 
+Converts the terminal based Tesseract OCR to a user-friendly interface that allows a user to upload. view and edit text
+from pictures.
+
 # Team Members
 
-<br>Wilfred Faltz <br><br>
-Alyssa Harris <br><br>
 Rafay Hassan <br><Br>
-Preethi Chandrashekar<br><br>
-Trey Wilcox <br><br>
 
 # Get Started
 
